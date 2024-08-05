@@ -1,14 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session, joinedload
 from fastapi.middleware.cors import CORSMiddleware
-from database import SessionLocal, engine
-import models, schemas
 from typing import List, Optional
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import logging
+
+from api import models
+from api import schemas
+from api.database import SessionLocal, engine
 
 logging.basicConfig(level=logging.DEBUG)
 models.Base.metadata.create_all(bind=engine)
@@ -27,7 +29,8 @@ app.add_middleware(
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-SECRET_KEY = "your_secret_key"
+# SECRET_KEY = "your_secret_key"
+SECRET_KEY = "A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A7B8C9D0E1F2G3H4I5J6K7L8M9N0O1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7F8G9H0I1J2K3L4M5N6O7P8Q9R0S1T2U3V4W5X6Y7Z8A9B0C1D2E3F4G5H6I7J8K9L0M1N2O3P4Q5R6S7T8U9V0W1X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M7N8O9P0Q1R2S3T4U5V6W7X8Y9Z0A1B2C3D4E5F6G7H8I9J0K1L2M3N4O5P6Q7R8S9T0U1V2W3X4Y5Z6A7B8C9D0E1F2G3H4I5J6K7L8M9N0O1P2Q3R4S5T6U7V8W9X0Y1Z2A3B4C5D6E7F8G9H0I1J2K3L4M5N6O7P8Q9R0S1T2U3V4W5X6Y7Z8A9B0C1D2E3F4G5H6I7J8K9L0M1N2O3P4Q5R6S7T8U9V0W1X2Y3Z4A5B6C7D8E9F0G1H2I3J4K5L6M"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
@@ -54,8 +57,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     return encoded_jwt
 
 # Add the missing imports
-from schemas import UserLogin, Token, TokenData  # Make sure these are defined in schemas
-from models import User  # Make sure this is defined in models
+from api.schemas import UserLogin, Token, TokenData
+from api.models import User 
 
 def verify_token(token: str, credentials_exception):
     try:
@@ -84,16 +87,16 @@ def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
     verify_token(token, credentials_exception)
     return {"message": "Token is valid"}
 
-@app.post("/token", response_model=Token)
-def login(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.username == user.username).first()
-    if not db_user or not pwd_context.verify(user.password, db_user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires
-    )
-    return {"access_token": access_token, "token_type": "bearer"}
+# @app.post("/token", response_model=Token)
+# def login(user: UserLogin, db: Session = Depends(get_db)):
+#     db_user = db.query(User).filter(User.username == user.username).first()
+#     if not db_user or not pwd_context.verify(user.password, db_user.password_hash):
+#         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
+#     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+#     access_token = create_access_token(
+#         data={"sub": user.username}, expires_delta=access_token_expires
+#     )
+#     return {"access_token": access_token, "token_type": "bearer"}
 
 # Other endpoints...
 
@@ -129,20 +132,6 @@ def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(db_user)
     return {"message": "User created successfully"}
 
-# @app.post("/token", response_model=schemas.Token)
-# def login(user: schemas.UserLogin, db: Session = Depends(get_db)):
-#     try:
-#         db_user = db.query(models.User).filter(models.User.username == user.username).first()
-#         if not db_user or not pwd_context.verify(user.password, db_user.password_hash):
-#             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
-#         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-#         access_token = create_access_token(
-#             data={"sub": user.username}, expires_delta=access_token_expires
-#         )
-#         return {"access_token": access_token, "token_type": "bearer"}
-#     except Exception as e:
-#         logging.error(f"Login error: {str(e)}")
-#         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 # Suivi Endpoints
 @app.get("/suivi/", response_model=List[schemas.Suivi])

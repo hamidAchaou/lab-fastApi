@@ -1,37 +1,15 @@
-# fast API
+# lab FastApi python 
 
-1. Clone the Project from GitHub:
-   
-```bash
-git clone repository-url
-``` 
-
-2. Navigate to the Project Directory:
-
-```bash
-cd api
-``` 
-
-3. Create a Virtual Environment:
-
+1. install venv
 ```bash
 python -m venv venv
-``` 
+```
+2. install library :
+```bash
+   pip install -r requirements.txt
+```
 
-4. Activate the Virtual Environment:
-
+3. activate script 
 ```bash
 venv\Scripts\activate
-``` 
-
-5. Install the Dependencies:
-
-```bash
-pip install -r requirements.txt
-``` 
-
-6. Running the FastAPI Application : 
-
-```bash
-uvicorn main:app --reload
-``` 
+```
