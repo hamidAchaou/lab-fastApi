@@ -139,16 +139,21 @@ def read_suivis(db: Session = Depends(get_db)):
     db_suivis = db.query(models.Suivi).options(
         joinedload(models.Suivi.type_bien),
         joinedload(models.Suivi.statut),
-        joinedload(models.Suivi.ville)
+        joinedload(models.Suivi.ville),
+        joinedload(models.Suivi.type_accompagnements)
     ).all()
     return db_suivis
 
-@app.get("/suivi/{suivi_id}", response_model=schemas.Suivi)
+# In main.py
+@app.get("/suivi/{suivi_id}", response_model=schemas.SuiviWithTypes)
 def read_suivi(suivi_id: int, db: Session = Depends(get_db)):
-    db_suivi = db.query(models.Suivi).filter(models.Suivi.id == suivi_id).first()
+    db_suivi = db.query(models.Suivi).options(
+        joinedload(models.Suivi.type_accompagnements)
+    ).filter(models.Suivi.id == suivi_id).first()
     if db_suivi is None:
         raise HTTPException(status_code=404, detail="Suivi not found")
     return db_suivi
+
 
 @app.post("/suivi/create", response_model=schemas.Suivi)
 def create_suivi(suivi: schemas.SuiviCreate, db: Session = Depends(get_db)):

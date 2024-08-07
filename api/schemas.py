@@ -86,6 +86,11 @@ class SuiviBase(BaseModel):
     id_ville: Optional[int]
     type_accompagnement_ids: List[SuiviTypeAccompagnementCreate] = []
 
+class SuiviWithTypes(SuiviBase):
+    type_accompagnements: List[TypeAccompagnement]
+
+    class Config:
+        orm_mode = True
 class SuiviCreate(SuiviBase):
     pass
 
@@ -95,6 +100,7 @@ class Suivi(SuiviBase):
     statut: Optional[Statut]
     ville: Optional[Ville]
     type_accompagnement_ids: List[SuiviTypeAccompagnement] = []
+    type_accompagnements: List[TypeAccompagnement] = []
 
     class Config:
         orm_mode = True
