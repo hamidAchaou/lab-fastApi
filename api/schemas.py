@@ -87,6 +87,10 @@ class SuiviBase(BaseModel):
     type_accompagnement_ids: List[SuiviTypeAccompagnementCreate] = []
 
 class SuiviWithTypes(SuiviBase):
+    id: int
+    type_bien: TypeBien
+    statut: Statut
+    ville: Ville
     type_accompagnements: List[TypeAccompagnement]
 
     class Config:
