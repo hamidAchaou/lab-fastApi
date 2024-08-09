@@ -151,13 +151,15 @@ def read_suivis(db: Session = Depends(get_db)):
 @app.get("/suivi/{suivi_id}", response_model=schemas.SuiviWithTypes)
 def read_suivi(suivi_id: int, db: Session = Depends(get_db)):
     db_suivi = db.query(models.Suivi).options(
-        joinedload(models.Suivi.type_accompagnements),
         joinedload(models.Suivi.type_bien),
         joinedload(models.Suivi.statut),
         joinedload(models.Suivi.ville),
+        joinedload(models.Suivi.type_accompagnement_associations).joinedload(models.SuiviTypeAccompagnement.type_accompagnement),
     ).filter(models.Suivi.id == suivi_id).first()
+
     if db_suivi is None:
         raise HTTPException(status_code=404, detail="Suivi not found")
+
     return db_suivi
 
 

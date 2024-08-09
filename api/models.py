@@ -30,11 +30,17 @@ class Statut(Base):
     nom = Column(String(255), nullable=False)
 
 class TypeAccompagnement(Base):
-    __tablename__ = 'type_accompagnement'
+    __tablename__ = "type_accompagnement"
+
     id = Column(Integer, primary_key=True, index=True)
     nom = Column(String(255), nullable=False)
+    
     suivi_associations = relationship("SuiviTypeAccompagnement", back_populates="type_accompagnement")
-    suivis = relationship("Suivi", secondary="suivi_type_accompagnement", back_populates="type_accompagnements")
+    suivis = relationship(
+        "Suivi",
+        secondary="suivi_type_accompagnement",
+        back_populates="type_accompagnements"
+    )
 
 class Suivi(Base):
     __tablename__ = 'suivi'
@@ -64,15 +70,19 @@ class Suivi(Base):
     type_bien = relationship('TypeBien')
     statut = relationship('Statut')
     ville = relationship('Ville')
-    type_accompagnement_ids = relationship('SuiviTypeAccompagnement', back_populates='suivi')
-    type_accompagnement_associations = relationship('SuiviTypeAccompagnement', back_populates='suivi')
-    type_accompagnements = relationship("TypeAccompagnement", secondary="suivi_type_accompagnement", back_populates="suivis")
+    type_accompagnement_associations = relationship("SuiviTypeAccompagnement", back_populates="suivi")
+    type_accompagnements = relationship(
+        "TypeAccompagnement",
+        secondary="suivi_type_accompagnement",
+        back_populates="suivis"
+    )
+
 class SuiviTypeAccompagnement(Base):
     __tablename__ = 'suivi_type_accompagnement'
-    id_suivi = Column(Integer, ForeignKey('suivi.id'), primary_key=True)
-    id_type_accompagnement = Column(Integer, ForeignKey('type_accompagnement.id'), primary_key=True)
-    # statut_suivi_type_accompagnement = Column(String(255))
 
-    suivi = relationship('Suivi', back_populates='type_accompagnement_associations')
-    type_accompagnement = relationship('TypeAccompagnement', back_populates='suivi_associations')
-    type_accompagnement_ids = relationship('TypeAccompagnement')
+    id_suivi = Column(Integer, ForeignKey("suivi.id"), primary_key=True)
+    id_type_accompagnement = Column(Integer, ForeignKey("type_accompagnement.id"), primary_key=True)
+    statut_suivi_type_accompagnement = Column(String(55), default="a faire")
+
+    suivi = relationship("Suivi", back_populates="type_accompagnement_associations")
+    type_accompagnement = relationship("TypeAccompagnement", back_populates="suivi_associations")

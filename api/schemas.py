@@ -52,6 +52,7 @@ class TypeAccompagnement(TypeAccompagnementBase):
 
 class SuiviTypeAccompagnementBase(BaseModel):
     id_type_accompagnement: int
+    statut_suivi_type_accompagnement: str
 
 class SuiviTypeAccompagnementCreate(SuiviTypeAccompagnementBase):
     pass
@@ -92,6 +93,7 @@ class SuiviWithTypes(SuiviBase):
     statut: Statut
     ville: Ville
     type_accompagnements: List[TypeAccompagnement]
+    type_accompagnement_associations: List[SuiviTypeAccompagnement]
 
     class Config:
         orm_mode = True
