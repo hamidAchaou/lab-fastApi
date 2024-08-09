@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import logging
+from api.models import SuiviTypeAccompagnement
 from api.schemas import UpdateSuiviTypeAccompagnementStatus
 
 from api import models
@@ -435,19 +436,23 @@ def delete_typeaccompagnement(typeaccompagnement_id: int, db: Session = Depends(
 @app.put("/suivi/update_type_accompagnement_status", response_model=dict)
 def update_suivi_type_accompagnement_status(update_data: UpdateSuiviTypeAccompagnementStatus, db: Session = Depends(get_db)):
     try:
-        # Fetch the existing record
-        db_suivi_type_accompagnement = db.query(models.SuiviTypeAccompagnement).filter(
-            models.SuiviTypeAccompagnement.id_suivi == update_data.id_suivi,
-            models.SuiviTypeAccompagnement.id_type_accompagnement == update_data.id_type_accompagnement
+        # Fetch the specific record
+        db_suivi_type_accompagnement = db.query(SuiviTypeAccompagnement).filter(
+            SuiviTypeAccompagnement.id_suivi == update_data.id_suivi,
+            SuiviTypeAccompagnement.id_type_accompagnement == update_data.id_type_accompagnement
         ).first()
 
+        # Check if the record exists
         if not db_suivi_type_accompagnement:
             raise HTTPException(status_code=404, detail="SuiviTypeAccompagnement not found")
 
         # Update the status
-        db_suivi_type_accompagnement.status = update_data.new_status
+        db_suivi_type_accompagnement.statut_suivi_type_accompagnement = update_data.new_status
         
+        # Commit the transaction
         db.commit()
+        
+        # Refresh the session to reflect the changes
         db.refresh(db_suivi_type_accompagnement)
 
         return {"message": "Status updated successfully"}
