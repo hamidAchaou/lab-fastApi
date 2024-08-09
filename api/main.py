@@ -435,17 +435,17 @@ def delete_typeaccompagnement(typeaccompagnement_id: int, db: Session = Depends(
 @app.put("/suivi/update_type_accompagnement_status", response_model=dict)
 def update_suivi_type_accompagnement_status(update_data: UpdateSuiviTypeAccompagnementStatus, db: Session = Depends(get_db)):
     try:
-        # Fetch the existing record in the many-to-many relationship table
+        # Fetch the existing record
         db_suivi_type_accompagnement = db.query(models.SuiviTypeAccompagnement).filter(
             models.SuiviTypeAccompagnement.id_suivi == update_data.id_suivi,
             models.SuiviTypeAccompagnement.id_type_accompagnement == update_data.id_type_accompagnement
         ).first()
 
         if not db_suivi_type_accompagnement:
-            raise HTTPException(status_code=404, detail="SuiviTypeAccompagnement record not found")
+            raise HTTPException(status_code=404, detail="SuiviTypeAccompagnement not found")
 
-        # Update the statut_suivi_type_accompagnement field
-        db_suivi_type_accompagnement.statut_suivi_type_accompagnement = update_data.statut_suivi_type_accompagnement
+        # Update the status
+        db_suivi_type_accompagnement.status = update_data.new_status
         
         db.commit()
         db.refresh(db_suivi_type_accompagnement)
