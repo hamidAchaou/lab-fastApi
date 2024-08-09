@@ -7,6 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import logging
+from api.schemas import UpdateSuiviTypeAccompagnementStatus
 
 from api import models
 from api import schemas
@@ -430,10 +431,24 @@ def delete_typeaccompagnement(typeaccompagnement_id: int, db: Session = Depends(
     db.commit()
     return {"message": "TypeAccompagnement deleted successfully"}
 
-# from fastapi import FastAPI
+@app.put("/suivi/update_type_accompagnement_status", response_model=dict)
+def update_suivi_type_accompagnement_status(update_data: UpdateSuiviTypeAccompagnementStatus, db: Session = Depends(get_db)):
+    try:
+        # Fetch the existing record
+        db_suivi_type_accompagnement = db.query(models.SuiviTypeAccompagnement).filter(
+            models.SuiviTypeAccompagnement.id_type_accompagnement == update_data.id_type_accompagnement
+        ).first()
 
-# app = FastAPI()
+        if not db_suivi_type_accompagnement:
+            raise HTTPException(status_code=404, detail="SuiviTypeAccompagnement not found")
 
-# @app.get("/")
-# async def health_check():
-#     return "deploimen successfully"
+        # Update the status (assuming there's a 'status' field in SuiviTypeAccompagnement)
+        db_suivi_type_accompagnement.status = update_data.new_status
+        
+        db.commit()
+        db.refresh(db_suivi_type_accompagnement)
+
+        return {"message": "Status updated successfully"}
+    except Exception as e:
+        db.rollback()  # Rollback in case of error
+        raise HTTPException(status_code=500, detail="Internal Server Error")

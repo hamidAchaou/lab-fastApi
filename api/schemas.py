@@ -56,6 +56,9 @@ class SuiviTypeAccompagnementBase(BaseModel):
 
 class SuiviTypeAccompagnementCreate(SuiviTypeAccompagnementBase):
     pass
+class UpdateSuiviTypeAccompagnementStatus(BaseModel):
+    id_type_accompagnement: int
+    new_status: str
 
 class SuiviTypeAccompagnement(SuiviTypeAccompagnementBase):
     id_suivi: int
