@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
 
+# Ville Schemas
 class VilleBase(BaseModel):
     nom: str
 
@@ -14,6 +15,7 @@ class Ville(VilleBase):
     class Config:
         orm_mode = True
 
+# TypeBien Schemas
 class TypeBienBase(BaseModel):
     nom: str
 
@@ -26,6 +28,7 @@ class TypeBien(TypeBienBase):
     class Config:
         orm_mode = True
 
+# Statut Schemas
 class StatutBase(BaseModel):
     nom: str
 
@@ -38,6 +41,7 @@ class Statut(StatutBase):
     class Config:
         orm_mode = True
 
+# TypeAccompagnement Schemas
 class TypeAccompagnementBase(BaseModel):
     nom: str
 
@@ -50,6 +54,7 @@ class TypeAccompagnement(TypeAccompagnementBase):
     class Config:
         orm_mode = True
 
+# SuiviTypeAccompagnement Schemas
 class SuiviTypeAccompagnementBase(BaseModel):
     id_type_accompagnement: int
     statut_suivi_type_accompagnement: str
@@ -61,12 +66,14 @@ class UpdateSuiviTypeAccompagnementStatus(BaseModel):
     id_suivi: int
     id_type_accompagnement: int
     new_status: str
+
 class SuiviTypeAccompagnement(SuiviTypeAccompagnementBase):
     id_suivi: int
 
     class Config:
         orm_mode = True
 
+# Suivi Schemas
 class SuiviBase(BaseModel):
     nom: str
     representant: Optional[str]
@@ -101,6 +108,7 @@ class SuiviWithTypes(SuiviBase):
 
     class Config:
         orm_mode = True
+
 class SuiviCreate(SuiviBase):
     pass
 
@@ -121,8 +129,7 @@ class SuiviUpdate(SuiviBase):
     class Config:
         orm_mode = True
 
-# authentication 
-
+# Authentication Schemas
 class UserCreate(BaseModel):
     username: str
     email: str
