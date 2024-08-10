@@ -76,7 +76,14 @@ def verify_token(token: str, credentials_exception):
     except JWTError as e:
         logging.error(f"JWT Error: {e}")
         raise credentials_exception
+    
+from datetime import timedelta
 
+# Example of issuing a JWT with a longer expiration time (e.g., 7 days)
+access_token_expires = timedelta(days=7)
+token = create_access_token(data={"sub": "user.username"}, expires_delta=access_token_expires)
+
+# Basic root endpoint
 @app.post("/")
 async def create_item():
     return {"hello": "world"}
