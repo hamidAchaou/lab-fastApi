@@ -57,7 +57,7 @@ class TypeAccompagnement(TypeAccompagnementBase):
 # SuiviTypeAccompagnement Schemas
 class SuiviTypeAccompagnementBase(BaseModel):
     id_type_accompagnement: int
-    statut_suivi_type_accompagnement: str
+    statut_suivi_type_accompagnement: Optional[str]
 
 class SuiviTypeAccompagnementCreate(SuiviTypeAccompagnementBase):
     pass
@@ -96,7 +96,7 @@ class SuiviBase(BaseModel):
     id_type_bien: Optional[int]
     id_statut: Optional[int]
     id_ville: Optional[int]
-    type_accompagnement_ids: List[SuiviTypeAccompagnementCreate] = []
+    type_accompagnement_ids: List[SuiviTypeAccompagnementBase] = []
 
 class SuiviWithTypes(SuiviBase):
     id: int
@@ -110,7 +110,7 @@ class SuiviWithTypes(SuiviBase):
         orm_mode = True
 
 class SuiviCreate(SuiviBase):
-    pass
+    type_accompagnement_ids: List[SuiviTypeAccompagnementBase] = []
 
 class Suivi(SuiviBase):
     id: int
