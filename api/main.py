@@ -22,7 +22,7 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://asmaa-dashboard.vercel.app", "http://localhost:5173/"],
+    allow_origins=["https://asmaa-dashboard.vercel.app", "http://localhost:5173", "https://dashboard-material-ui-kappa.vercel.app/"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
